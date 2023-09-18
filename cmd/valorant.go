@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	fetch "github.com/Julia-Marcal/valorant-cmd/fetch"
+	"github.com/Julia-Marcal/valorant-cmd/fetch"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -23,7 +23,11 @@ type ValorantModel struct {
 	err     error
 }
 
-func NewCmdValorant(text string) ValorantModel {
+func (p ValorantModel) Init() tea.Cmd {
+	return textinput.Blink
+}
+
+func NewCmdValorant() ValorantModel {
 	var inputs []textinput.Model = make([]textinput.Model, 2)
 
 	inputs[name] = textinput.New()
@@ -44,10 +48,6 @@ func NewCmdValorant(text string) ValorantModel {
 		err:     nil,
 	}
 
-}
-
-func (p ValorantModel) Init() tea.Cmd {
-	return textinput.Blink
 }
 
 func (p ValorantModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -85,13 +85,11 @@ func (p ValorantModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (p ValorantModel) View() string {
-	accountInfo, _ := fetch.AccountInformation(p.inputs[name].Value(), p.inputs[tag].Value())
 	return fmt.Sprintf(
 		`
 		%s
 		%s
-
-		%s
+		
 		`,
 		p.inputs[name].View(),
 		p.inputs[tag].View(),
@@ -107,4 +105,12 @@ func (p *ValorantModel) prevInput() {
 	if p.focused < 0 {
 		p.focused = len(p.inputs) - 1
 	}
+}
+
+func FetchAccount(p *ValorantModel) (fetch.AccountInfo, error) {
+	accountInfo, err := fetch.AccountInformation(p.inputs[name].Value(), p.inputs[tag].Value())
+	if err != nil {
+		return fetch.AccountInfo{}, err
+	}
+	return *accountInfo, nil
 }
