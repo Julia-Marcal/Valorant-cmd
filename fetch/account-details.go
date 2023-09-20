@@ -10,21 +10,22 @@ import (
 type AccountResponse struct {
 	Status int `json:"status"`
 	Data   struct {
-		Puuid  string `json:"puuid"`
-		Region string `json:"region"`
-		Name   string `json:"name"`
-		Tag    string `json:"tag"`
-		Card   struct {
+		AccountLevel int    `json:"account_level"`
+		Region       string `json:"region"`
+		Name         string `json:"name"`
+		Tag          string `json:"tag"`
+		Card         struct {
 			Large string `json:"large"`
 		} `json:"card"`
 	} `json:"data"`
 }
 
 type AccountInfo struct {
-	Region string
-	Name   string
-	Tag    string
-	Large  string
+	AccountLevel int
+	Region       string
+	Name         string
+	Tag          string
+	Large        string
 }
 
 func AccountInformation(name string, tag string) (*AccountInfo, error) {
@@ -53,9 +54,18 @@ func AccountInformation(name string, tag string) (*AccountInfo, error) {
 	}
 
 	return &AccountInfo{
-		Region: result.Data.Region,
-		Name:   result.Data.Name,
-		Tag:    result.Data.Tag,
-		Large:  result.Data.Card.Large,
+		AccountLevel: result.Data.AccountLevel,
+		Region:       result.Data.Region,
+		Name:         result.Data.Name,
+		Tag:          result.Data.Tag,
+		Large:        result.Data.Card.Large,
 	}, nil
+}
+
+func FetchAccount(Name string, Tag string) (string, int, string, error) {
+	accountInfo, err := AccountInformation(Name, Tag)
+	if err != nil {
+		return accountInfo.Region, accountInfo.AccountLevel, accountInfo.Large, nil
+	}
+	return accountInfo.Region, accountInfo.AccountLevel, accountInfo.Large, nil
 }
