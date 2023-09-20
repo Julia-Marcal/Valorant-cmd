@@ -3,7 +3,8 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/Julia-Marcal/valorant-cmd/fetch"
+	"strings"
+
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -13,37 +14,37 @@ type (
 )
 
 const (
-	name = iota
-	tag
+	Name = iota
+	Tag
 )
 
 type ValorantModel struct {
-	inputs  []textinput.Model
+	Inputs  []textinput.Model
 	focused int
 	err     error
 }
 
 func (p ValorantModel) Init() tea.Cmd {
-	return textinput.Blink
+	return nil
 }
 
 func NewCmdValorant() ValorantModel {
-	var inputs []textinput.Model = make([]textinput.Model, 2)
+	var Inputs []textinput.Model = make([]textinput.Model, 2)
 
-	inputs[name] = textinput.New()
-	inputs[name].Placeholder = "Username"
-	inputs[name].Focus()
-	inputs[name].CharLimit = 16
-	inputs[name].Width = 30
+	Inputs[Name] = textinput.New()
+	Inputs[Name].Placeholder = "UserName"
+	Inputs[Name].Focus()
+	Inputs[Name].CharLimit = 16
+	Inputs[Name].Width = 30
 
-	inputs[tag] = textinput.New()
-	inputs[tag].Placeholder = "Tag"
-	inputs[tag].Focus()
-	inputs[tag].CharLimit = 5
-	inputs[tag].Width = 15
+	Inputs[Tag] = textinput.New()
+	Inputs[Tag].Placeholder = "Tag"
+	Inputs[Tag].Focus()
+	Inputs[Tag].CharLimit = 5
+	Inputs[Tag].Width = 15
 
 	return ValorantModel{
-		inputs:  inputs,
+		Inputs:  Inputs,
 		focused: 0,
 		err:     nil,
 	}
@@ -51,13 +52,13 @@ func NewCmdValorant() ValorantModel {
 }
 
 func (p ValorantModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	var cmds []tea.Cmd = make([]tea.Cmd, len(p.inputs))
+	var cmds []tea.Cmd = make([]tea.Cmd, len(p.Inputs))
 
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyEnter:
-			if p.focused == len(p.inputs)-1 {
+			if p.focused == len(p.Inputs)-1 {
 				return p, tea.Quit
 			}
 			p.nextInput()
@@ -68,49 +69,43 @@ func (p ValorantModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyTab, tea.KeyCtrlN:
 			p.nextInput()
 		}
-		for i := range p.inputs {
-			p.inputs[i].Blur()
+		for i := range p.Inputs {
+			p.Inputs[i].Blur()
 		}
-		p.inputs[p.focused].Focus()
+		p.Inputs[p.focused].Focus()
 
 	case errMsg:
 		p.err = msg
 		return p, nil
 	}
 
-	for i := range p.inputs {
-		p.inputs[i], cmds[i] = p.inputs[i].Update(msg)
+	for i := range p.Inputs {
+		p.Inputs[i], cmds[i] = p.Inputs[i].Update(msg)
 	}
 	return p, tea.Batch(cmds...)
 }
 
 func (p ValorantModel) View() string {
+	s := strings.Builder{}
+	s.WriteString("What is your nickName and Tag?")
 	return fmt.Sprintf(
 		`
 		%s
 		%s
 		
 		`,
-		p.inputs[name].View(),
-		p.inputs[tag].View(),
+		p.Inputs[Name].View(),
+		p.Inputs[Tag].View(),
 	) + "\n"
 }
 
 func (p *ValorantModel) nextInput() {
-	p.focused = (p.focused + 1) % len(p.inputs)
+	p.focused = (p.focused + 1) % len(p.Inputs)
 }
 
 func (p *ValorantModel) prevInput() {
 	p.focused--
 	if p.focused < 0 {
-		p.focused = len(p.inputs) - 1
+		p.focused = len(p.Inputs) - 1
 	}
-}
-
-func FetchAccount(p *ValorantModel) (fetch.AccountInfo, error) {
-	accountInfo, err := fetch.AccountInformation(p.inputs[name].Value(), p.inputs[tag].Value())
-	if err != nil {
-		return fetch.AccountInfo{}, err
-	}
-	return *accountInfo, nil
 }
