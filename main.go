@@ -52,9 +52,9 @@ func main() {
 
 		fmt.Printf("\n")
 
-		fmt.Printf("Average kills from last matches %.0f\n", avarages[0])
-		fmt.Printf("Average death from last matches %.0f\n", avarages[1])
-		fmt.Printf("Average assists from last matches %.0f\n", avarages[2])
+		fmt.Printf("Average kills from last matches: %.0f\n", avarages[0])
+		fmt.Printf("Average death from last matches: %.0f\n", avarages[1])
+		fmt.Printf("Average assists from last matches: %.0f\n", avarages[2])
 		fmt.Printf("Your best character is: %s\n", bestCharacter)
 	}
 
