@@ -6,17 +6,10 @@ BubbleTea-ValorantCMD is a robust terminal-based application that allows Valoran
 
 ## Features
 
-<<<<<<< HEAD
 - Check your Valorant performance metrics such as K/D ratio, win rate, and more.
 - User-friendly command line interface powered by BubbleTea.
 - Real-time data fetched via the Unofficial Valorant API.
 
-=======
-- Check your Valorant performance metrics such as K/D ratio, best character, and more.
-- User-friendly command line interface powered by BubbleTea.
-- Real-time data fetched via the Unofficial Valorant API.
-- 
->>>>>>> origin/main
 ## Installation & Setup
 
 ### Prerequisites
@@ -63,8 +56,5 @@ BubbleTea-ValorantCMD is a robust terminal-based application that allows Valoran
 ## Contribution
 
 Feel free to open issues or submit pull requests to contribute to this project.
-<<<<<<< HEAD
 
 ![Screenshot of example](./screenshot.png)("Screenshot of a example")
-=======
->>>>>>> origin/main
