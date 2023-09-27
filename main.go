@@ -5,7 +5,7 @@ import (
 	"os"
 
 	cmd "github.com/Julia-Marcal/valorant-cmd/cmd"
-	val "github.com/Julia-Marcal/valorant-cmd/fetch"
+	val "github.com/Julia-Marcal/valorant-cmd/internal"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -25,14 +25,20 @@ func main() {
 		nameValue := m.Inputs[cmd.Name].Value()
 		tagValue := m.Inputs[cmd.Tag].Value()
 
-		reg, puuid, lvl, img, err_fetch := val.FetchAccount(nameValue, tagValue)
+		AccountFactory := &val.ConcreteAccountFetcherFactory{}
+		AccountFetcher := AccountFactory.Create()
+
+		reg, puuid, lvl, img, err_fetch := AccountFetcher.FetchAccount(nameValue, tagValue)
 
 		if err_fetch != nil {
 			fmt.Println("Oh no:", err_fetch)
 			os.Exit(1)
 		}
 
-		matchInfo, mapINfo, avarages, bestCharacter, matchErr := val.FetchMatches(reg, puuid)
+		MatchFactory := &val.ConcreteMatchesFetcherFactory{}
+		MatchFetcher := MatchFactory.Create()
+
+		matchInfo, mapINfo, averages, bestCharacter, matchErr := MatchFetcher.FetchMatchData(reg, puuid)
 
 		if matchErr != nil {
 			fmt.Println("Oh no:", err_fetch)
@@ -52,9 +58,9 @@ func main() {
 
 		fmt.Printf("\n")
 
-		fmt.Printf("Average kills from last matches: %.0f\n", avarages[0])
-		fmt.Printf("Average death from last matches: %.0f\n", avarages[1])
-		fmt.Printf("Average assists from last matches: %.0f\n", avarages[2])
+		fmt.Printf("Average kills from last matches: %.0f\n", averages[0])
+		fmt.Printf("Average death from last matches: %.0f\n", averages[1])
+		fmt.Printf("Average assists from last matches: %.0f\n", averages[2])
 		fmt.Printf("Your best character is: %s\n", bestCharacter)
 	}
 
