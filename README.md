@@ -57,4 +57,4 @@ BubbleTea-ValorantCMD is a robust terminal-based application that allows Valoran
 
 Feel free to open issues or submit pull requests to contribute to this project.
 
-![Screenshot of example](./screenshot.png)("Screenshot of a example")
+![Screenshot of example](./screenshot.png)
